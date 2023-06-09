@@ -1,10 +1,11 @@
-const Config = require('@kapeta/sdk-config');
-const EmailJS =  require('emailjs');
+import Config, { ConfigProvider, ResourceInfo } from '@kapeta/sdk-config';
+import { SMTPClient, MessageHeaders,AUTH_METHODS }  from 'emailjs';
+const RESOURCE_TYPE = 'kapeta/resource-type-smtp-client';
+const PORT_TYPE = 'smtp';
+type SimpleSendOpts = Omit<MessageHeaders, "from"> & {from?: string};
+export type EmailSendOptions = MessageHeaders|SimpleSendOpts;
 
-const RESOURCE_TYPE = "kapeta/resource-type-smtp-client";
-const PORT_TYPE = "smtp";
-
-function trueIsh(value) {
+function trueIsh(value: any) {
     if (!value) {
         return false;
     }
@@ -16,7 +17,11 @@ function trueIsh(value) {
     return value === '1' || value === 'true' || value === 'yes';
 }
 
-class SMTPClient {
+export * from 'emailjs';
+export class EmailClient {
+    private _ready: boolean = false;
+    private _smtpInfo?: ResourceInfo;
+    private _client?: SMTPClient;
 
     /**
      * Initialise SMTP client
@@ -24,22 +29,6 @@ class SMTPClient {
      * @param {string} resourceName
      */
     constructor() {
-        this._ready = false;
-
-        /**
-         *
-         * @type {ResourceInfo}
-         * @private
-         */
-        this._smtpInfo = null;
-
-        /**
-         *
-         * @type {EmailJS.SMTPClient}
-         * @private
-         */
-        this._client = null;
-
         //Add init method to startup sequence
         Config.onReady(async (provider) => {
             await this.init(provider);
@@ -52,39 +41,37 @@ class SMTPClient {
      * @param {ConfigProvider} provider
      * @return {Promise<void>}
      */
-    async init(provider) {
+    async init(provider: ConfigProvider) {
         this._smtpInfo = await provider.getResourceInfo(RESOURCE_TYPE, PORT_TYPE, PORT_TYPE);
-        const authentication = this._smtpInfo.options?.authentication ?
-            this._smtpInfo.options?.authentication.split(',') : ['PLAIN'];
+        const authentication = this._smtpInfo.options?.authentication
+            ? (this._smtpInfo.options?.authentication.split(',') as (keyof typeof AUTH_METHODS)[])
+            : [AUTH_METHODS.PLAIN];
 
-        this._client = new EmailJS.SMTPClient({
+        this._client = new SMTPClient({
             host: this._smtpInfo.host,
-            port: this._smtpInfo.port,
+            port: parseInt('' + this._smtpInfo.port),
             user: this._smtpInfo.credentials?.username,
             password: this._smtpInfo.credentials?.password,
             ssl: trueIsh(this._smtpInfo.options?.ssl),
             tls: trueIsh(this._smtpInfo.options?.tls),
-            authentication
+            authentication,
         });
 
         await this._testConnection();
 
         this._ready = true;
-
-
     }
 
-    /**
-     *
-     * @param {EmailJS.Message | EmailJS.MessageHeaders} message
-     * @return {Promise<EmailJS.Message>}
-     */
-    async send(message) {
+    async send(message: MessageHeaders|SimpleSendOpts) {
         if (!this._ready) {
             throw new Error('SMTPClient not ready');
         }
 
-        return this._client.sendAsync(message);
+        if (!message.from) {
+            throw new Error('Missing from address');
+        }
+
+        return this._client!.sendAsync(message as MessageHeaders);
     }
 
     /**
@@ -96,22 +83,18 @@ class SMTPClient {
             throw new Error('SMTPClient not ready');
         }
 
-        return this._client.smtp;
+        return this._client!.smtp;
     }
 
     async _testConnection() {
-        return  new Promise((resolve, reject) => {
-            this._client.smtp.connect((err) => {
+        return new Promise((resolve, reject) => {
+            this._client!.smtp.connect((err) => {
                 if (err) {
                     reject(err);
                     return;
                 }
-                resolve();
-            })
+                resolve(null);
+            });
         });
     }
-
 }
-
-
-module.exports = SMTPClient;

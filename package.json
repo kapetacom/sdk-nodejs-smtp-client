@@ -1,32 +1,87 @@
 {
-  "name": "@kapeta/sdk-smtp-client",
-  "version": "0.0.1",
-  "description": "SMTP Client for SMTP Operator",
-  "main": "index.js",
-  "private": false,
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kapetacom/sdk-nodejs-smtp-client.git"
-  },
-  "keywords": [
-    "kapeta"
-  ],
-  "author": "Henrik Hofmeister <henrik.hofmeister@kapeta.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/kapetacom/sdk-nodejs-smtp-client/issues"
-  },
-  "homepage": "https://github.com/kapetacom/sdk-nodejs-smtp-client#readme",
-  "dependencies": {
-    "emailjs": "^4.0.2"
-  },
-  "devDependencies": {
-    "@kapeta/sdk-config": "<2"
-  },
-  "peerDependencies": {
-    "@kapeta/sdk-config": "<2"
-  }
+    "name": "@kapeta/sdk-smtp-client",
+    "version": "0.0.1",
+    "description": "SMTP Client for SMTP Operator",
+    "type": "module",
+    "exports": {
+        ".": {
+            "import": {
+                "types": "./dist/esm/index.d.ts",
+                "default": "./dist/esm/index.js"
+            },
+            "require": {
+                "types": "./dist/cjs/index.d.cts",
+                "default": "./dist/cjs/index.js"
+            }
+        }
+    },
+    "types": "./dist/esm/index.d.ts",
+    "main": "./dist/cjs/index.js",
+    "private": false,
+    "publishConfig": {
+        "access": "public"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/kapetacom/sdk-nodejs-smtp-client.git"
+    },
+    "keywords": [
+        "kapeta"
+    ],
+    "author": "Henrik Hofmeister <henrik.hofmeister@kapeta.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/kapetacom/sdk-nodejs-smtp-client/issues"
+    },
+    "scripts": {
+        "clean": "rm -rf ./dist",
+        "build:esm": "tsc --module esnext --outDir ./dist/esm && echo '{\"type\":\"module\"}' > ./dist/esm/package.json",
+        "build:cjs": "tsc --module commonjs --outDir ./dist/cjs && echo '{\"type\":\"commonjs\"}' > ./dist/cjs/package.json",
+        "build": "npm run clean && npm run build:esm && npm run build:cjs",
+        "format": "prettier --write .",
+        "lint": "tsc --noEmit && eslint src/**/*.ts",
+        "prepublishOnly": "npm run build"
+    },
+    "homepage": "https://github.com/kapetacom/sdk-nodejs-smtp-client#readme",
+    "prettier": "@kapeta/prettier-config",
+    "release": {
+        "plugins": [
+            "@semantic-release/commit-analyzer",
+            "@semantic-release/release-notes-generator",
+            [
+                "@semantic-release/changelog",
+                {
+                    "changelogFile": "CHANGELOG.md"
+                }
+            ],
+            "@semantic-release/npm",
+            "@semantic-release/github",
+            [
+                "@semantic-release/git",
+                {
+                    "assets": [
+                        "CHANGELOG.md",
+                        "package.json",
+                        "package-lock.json"
+                    ],
+                    "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+                }
+            ]
+        ]
+    },
+    "dependencies": {
+        "emailjs": "^4.0.2"
+    },
+    "devDependencies": {
+        "@kapeta/eslint-config": "^0.6.0",
+        "@kapeta/prettier-config": "^0.6.0",
+        "@kapeta/sdk-config": "<2",
+        "@types/node": "^20.2.5",
+        "eslint": "^8.42.0",
+        "eslint-config-prettier": "^8.8.0",
+        "prettier": "^2.8.8"
+    },
+    "peerDependencies": {
+        "@kapeta/sdk-config": "<2"
+    }
 }
