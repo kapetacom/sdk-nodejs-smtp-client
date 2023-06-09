@@ -47,17 +47,27 @@ export class EmailClient {
             ? (this._smtpInfo.options?.authentication.split(',') as (keyof typeof AUTH_METHODS)[])
             : [AUTH_METHODS.PLAIN];
 
-        this._client = new SMTPClient({
+        console.log('Connecting to SMTP server at %s:%s', this._smtpInfo.host, this._smtpInfo.port);
+
+        const opts = {
             host: this._smtpInfo.host,
             port: parseInt('' + this._smtpInfo.port),
+            domain: this._smtpInfo.host,
             user: this._smtpInfo.credentials?.username,
             password: this._smtpInfo.credentials?.password,
             ssl: trueIsh(this._smtpInfo.options?.ssl),
             tls: trueIsh(this._smtpInfo.options?.tls),
-            authentication,
-        });
+            authentication: this._smtpInfo.credentials?.username ? authentication : undefined,
+        }
+        this._client = new SMTPClient(opts);
+        try {
+            await this._testConnection();
+        } catch (err) {
+            console.error('Failed to connect to SMTP server at %s:%s', this._smtpInfo.host, this._smtpInfo.port, err);
+            throw new Error('Failed to connect to SMTP server');
+        }
 
-        await this._testConnection();
+        console.log('Connected to SMTP server at %s:%s', this._smtpInfo.host, this._smtpInfo.port);
 
         this._ready = true;
     }
