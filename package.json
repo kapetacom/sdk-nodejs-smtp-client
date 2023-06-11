@@ -1,6 +1,6 @@
 {
     "name": "@kapeta/sdk-smtp-client",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "SMTP Client for SMTP Operator",
     "type": "commonjs",
     "exports": {
