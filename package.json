@@ -2,7 +2,7 @@
     "name": "@kapeta/sdk-smtp-client",
     "version": "1.0.0",
     "description": "SMTP Client for SMTP Operator",
-    "type": "module",
+    "type": "commonjs",
     "exports": {
         ".": {
             "import": {
@@ -73,14 +73,14 @@
         "@react-email/render": "0.0.7",
         "nodemailer": "6.9.3",
         "react": "18.2.0",
-        "react-email": "1.9.3"
+        "react-email": "1.9.3",
+        "@types/nodemailer": "^6.4.8"
     },
     "devDependencies": {
         "@kapeta/eslint-config": "^0.6.0",
         "@kapeta/prettier-config": "^0.6.0",
         "@kapeta/sdk-config": "<2",
         "@types/node": "^20.2.5",
-        "@types/nodemailer": "^6.4.8",
         "@types/react": "^18.2.11",
         "eslint": "^8.42.0",
         "eslint-config-prettier": "^8.8.0",
