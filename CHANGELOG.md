@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/kapetacom/sdk-nodejs-smtp-client/compare/v1.0.1...v1.0.2) (2023-06-17)
+
+
+### Bug Fixes
+
+* Add resource name since we resolve the version using that ([#2](https://github.com/kapetacom/sdk-nodejs-smtp-client/issues/2)) ([9e64def](https://github.com/kapetacom/sdk-nodejs-smtp-client/commit/9e64deffc8ec6733ccb9af44fa18e5007a8aadcb))
+
 ## [1.0.1](https://github.com/kapetacom/sdk-nodejs-smtp-client/compare/v1.0.0...v1.0.1) (2023-06-11)
 
 
