@@ -18,6 +18,8 @@ function trueIsh(value: any) {
 export const RESOURCE_TYPE = 'kapeta/resource-type-smtp-client';
 export const PORT_TYPE = 'smtp';
 
+const RESOURCE_NAME = 'smtpclient'; //SMTP resource name is always the same
+
 export type SendReactMailOptions = Omit<SendMailOptions,'text'|'html'>  & { body:React.ReactElement }
 
 export * from 'nodemailer';
@@ -28,8 +30,6 @@ export class EmailClient {
 
     /**
      * Initialise SMTP client
-     *
-     * @param {string} resourceName
      */
     constructor() {
         //Add init method to startup sequence
@@ -45,7 +45,7 @@ export class EmailClient {
      * @return {Promise<void>}
      */
     async init(provider: ConfigProvider) {
-        this._smtpInfo = await provider.getResourceInfo(RESOURCE_TYPE, PORT_TYPE, PORT_TYPE);
+        this._smtpInfo = await provider.getResourceInfo(RESOURCE_TYPE, PORT_TYPE, RESOURCE_NAME);
 
         this._transport = NodeMailer.createTransport({
             host: this._smtpInfo.host,
