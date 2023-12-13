@@ -79,7 +79,7 @@
     "devDependencies": {
         "@kapeta/eslint-config": "^0.6.0",
         "@kapeta/prettier-config": "^0.6.0",
-        "@kapeta/sdk-config": "<2",
+        "@kapeta/sdk-config": "^2",
         "@types/node": "^20.2.5",
         "@types/react": "^18.2.11",
         "eslint": "^8.42.0",
@@ -87,6 +87,6 @@
         "prettier": "^2.8.8"
     },
     "peerDependencies": {
-        "@kapeta/sdk-config": "<2"
+        "@kapeta/sdk-config": "^2"
     }
 }

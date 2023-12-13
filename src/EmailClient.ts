@@ -45,7 +45,11 @@ export class EmailClient {
      * @return {Promise<void>}
      */
     async init(provider: ConfigProvider) {
-        this._smtpInfo = await provider.getResourceInfo(RESOURCE_TYPE, PORT_TYPE, RESOURCE_NAME);
+        const smtpInfo = await provider.getResourceInfo(RESOURCE_TYPE, PORT_TYPE, RESOURCE_NAME);
+        if (!smtpInfo) {
+            throw new Error('SMTP resource not found');
+        }
+        this._smtpInfo = smtpInfo;
 
         this._transport = NodeMailer.createTransport({
             host: this._smtpInfo.host,
