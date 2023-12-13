@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/kapetacom/sdk-nodejs-smtp-client/compare/v1.0.2...v2.0.0) (2023-12-13)
+
+
+### Features
+
+* Upgrade to V2 ([a5b36b1](https://github.com/kapetacom/sdk-nodejs-smtp-client/commit/a5b36b1b4d7918e18294356e5eab3c6207c20150))
+
+
+### BREAKING CHANGES
+
+* Upgrades to V2
+
 ## [1.0.2](https://github.com/kapetacom/sdk-nodejs-smtp-client/compare/v1.0.1...v1.0.2) (2023-06-17)
 
 
